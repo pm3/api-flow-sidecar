@@ -103,7 +103,7 @@ class Sidecar {
     if (gatewayApiKey != null) headers['X-Api-Key'] = gatewayApiKey!;
     var path = "$gatewayUrl/.queue/${event.id}";
     _logger.info('call $path');
-    var response = await xhttp(path, method: XMethod.post, headers: headers, body:body);
+    var response = await xhttp(path, method: 'post', headers: headers, body:body);
     return response;
   }
 
@@ -112,7 +112,7 @@ class Sidecar {
     var path = Uri.parse(appUrl).resolve(sufix).toString();
     _logger.info('call $path');
     var response =
-        await xhttp(path, method: XMethod.convert(event.method), headers: event.headers, body: event.body);
+        await xhttp(path, method: event.method, headers: event.headers, body: event.body);
     return response;
   }
 }

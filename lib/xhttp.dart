@@ -2,16 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-enum XMethod {
-  get,
-  post,
-  put;
-
-  static XMethod convert(String inp) {
-    return XMethod.values.firstWhere((e) => e.name == inp);
-  }  
-}
-
 class XResponse {
   int statusCode;
   Map<String, String> headers;
@@ -25,7 +15,7 @@ class XResponse {
 }
 
 Future<XResponse> xhttp(String path,
-    {XMethod method = XMethod.get,
+    {String method = 'get',
     Map<String, String>? headers,
     String? body,
     int connectionTimeout = 10,
@@ -36,7 +26,7 @@ Future<XResponse> xhttp(String path,
 
     Uri uri = Uri.parse(path);
 
-    var request = await client.openUrl(method.name, uri);
+    var request = await client.openUrl(method, uri);
     if (body != null) request.add(utf8.encode(body));
     if (headers != null) {
       for (var e in headers.entries) {
