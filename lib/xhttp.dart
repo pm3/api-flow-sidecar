@@ -27,12 +27,9 @@ Future<XResponse> xhttp(String path,
     Uri uri = Uri.parse(path);
 
     var request = await client.openUrl(method, uri);
+    if (headers != null) headers.forEach((key, value)=>request.headers.add(key, value));
+    
     if (body != null) request.add(utf8.encode(body));
-    if (headers != null) {
-      for (var e in headers.entries) {
-        request.headers.add(e.key, e.value);
-      }
-    }
     HttpClientResponse resp = await request.close().timeout(Duration(seconds: readTimeout));
     Map<String, String> respHeaders = {};
     resp.headers.forEach((k,v)=>respHeaders[k]=v.first);

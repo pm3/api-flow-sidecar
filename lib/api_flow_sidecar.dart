@@ -68,7 +68,7 @@ class Sidecar {
     _logger.info('task response ${resp.statusCode}');
     var resp2 =
         await callWorkerResponse(event, resp.statusCode, resp.body);
-    _logger.info("call worker response ${resp2.statusCode}");
+    _logger.info("worker response ${resp2.statusCode}");
   }
 
   Future<Event?> callWorker() async {
@@ -79,7 +79,7 @@ class Sidecar {
     }
     _logger.info('call $path');
     var resp = await xhttp(path, headers: headers);
-    _logger.info("call worker ${resp.statusCode}");
+    _logger.info("worker ${resp.statusCode}");
     if (resp.statusCode == 204 || resp.body=='') return null;
     if (resp.statusCode != 200) {
       throw Exception("call gateway error ${resp.body}");
@@ -101,7 +101,7 @@ class Sidecar {
     headers['Content-Type'] = "application/json";
     headers['fw-status'] = status.toString();
     if (gatewayApiKey != null) headers['X-Api-Key'] = gatewayApiKey!;
-    var path = "$gatewayUrl/.queue/${event.id}";
+    var path = "$gatewayUrl/.queue/response/${event.id}";
     _logger.info('call $path');
     var response = await xhttp(path, method: 'post', headers: headers, body:body);
     return response;
@@ -110,7 +110,10 @@ class Sidecar {
   Future<XResponse> callApp(Event event) async {
     var sufix = event.path.startsWith(workerPathPrefix) ? event.path.substring(workerPathPrefix.length) : event.path;
     var path = Uri.parse(appUrl).resolve(sufix).toString();
-    _logger.info('call $path');
+    _logger.info('call ${event.method} $path');
+    event.headers.forEach((k,v) { _logger.info('header $k: $v');});
+    _logger.info('');
+    _logger.info(event.body);
     var response =
         await xhttp(path, method: event.method, headers: event.headers, body: event.body);
     return response;

@@ -27,7 +27,7 @@ Future<void> main(List<String> arguments) async {
   var results = parser.parse(arguments);
 
   startSidecar(Sidecar(
-    concurrency: results['concurrency'], 
+    concurrency: int.parse(results['concurrency']), 
     workerPathPrefix: results['workerPathPrefix'], 
     gatewayUrl: results['gatewayUrl'], 
     gatewayApiKey: results['gatewayApiKey'], 
